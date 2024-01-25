@@ -50,6 +50,7 @@ style = [
 tests = [
     "pytest>=7.3",
     "pytest-cov>=4",
+    "six>=1.16.0"
 ]
 all = [
     "torchseg[style,tests]",
