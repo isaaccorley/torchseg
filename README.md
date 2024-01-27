@@ -386,7 +386,7 @@ configured by `aux_params` as follows:
 aux_params=dict(
     pooling='avg',             # one of 'avg', 'max'
     dropout=0.5,               # dropout ratio, default is None
-    activation='sigmoid',      # activation function, default is None
+    activation=nn.Sigmoid(),      # activation function, default is Identity
     classes=4,                 # define number of output labels
 )
 model = torchseg.Unet('resnet34', classes=4, aux_params=aux_params)
