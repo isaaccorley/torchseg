@@ -48,6 +48,9 @@ class Unet(SegmentationModel):
                 - dropout (float): Dropout factor in [0, 1)
                 - activation (str): An activation function to apply "sigmoid"/"softmax"
                     (could be **None** to return logits)
+        head_upsampling: Factor to upsample input to segmentation head. Defaults to 1.
+            This allows for use of U-Net decoder with models that need additional upsampling
+            to be at the original input image resolution.
 
 
     .. _Unet:
@@ -70,6 +73,7 @@ class Unet(SegmentationModel):
         activation: Callable = nn.Identity(),
         encoder_params: dict = {},
         aux_params: Optional[dict] = None,
+        head_upsampling: int = 1,
     ):
         super().__init__()
 
@@ -97,6 +101,7 @@ class Unet(SegmentationModel):
             out_channels=classes,
             activation=activation,
             kernel_size=3,
+            upsampling=head_upsampling,
         )
 
         if aux_params is not None:
