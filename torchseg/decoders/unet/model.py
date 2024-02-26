@@ -49,8 +49,8 @@ class Unet(SegmentationModel):
                 - activation (str): An activation function to apply "sigmoid"/"softmax"
                     (could be **None** to return logits)
         head_upsampling: Factor to upsample input to segmentation head. Defaults to 1.
-            This allows for use of U-Net decoder with models that need additional upsampling
-            to be at the original input image resolution.
+            This allows for use of U-Net decoder with models that need additional
+            upsampling to be at the original input image resolution.
 
 
     .. _Unet:
