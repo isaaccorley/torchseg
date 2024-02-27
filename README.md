@@ -29,17 +29,96 @@ The main features of this library are:
 
 #### Example Usage
 
-Segmentation model is just a PyTorch nn.Module, which can be created as easy as:
+TorchSeg models at their base are just torch nn.Modules. They can be created as follows:
 
 ```python
 import torchseg
 
 model = torchseg.Unet(
-    encoder_name="resnet34",        # choose encoder, e.g. mobilenet_v2 or efficientnet-b7
-    encoder_weights="imagenet",     # use `imagenet` pre-trained weights for encoder initialization
-    in_channels=1,                  # model input channels (1 for gray-scale images, 3 for RGB, etc.)
-    classes=3,                      # model output channels (number of classes in your dataset)
+    encoder_name="resnet50",
+    encoder_weights=True,
+    in_channels=3
+    classes=3,
 )
+```
+
+TorchSeg has an `encoder_params` feature which passes additional parameters to `timm.create_model()` when defining an encoder backbone. One can specify different activitions, normalization layers, and more like below.
+
+You can also define a `functools.partial` callable as an activation/normalization layer. See the timm docs for more information on available [activations](https://github.com/huggingface/pytorch-image-models/blob/main/timm/layers/create_act.py) and [normalization](https://github.com/huggingface/pytorch-image-models/blob/main/timm/layers/create_norm.py) layers. You can even used pretrained weights while changing the activations/normalizations!
+
+```python
+model = torchseg.Unet(
+    encoder_name="resnet50",
+    encoder_weights=True,
+    in_channels=3
+    classes=3,
+    encoder_params={
+      "act_layer": "prelu",
+      "norm_layer": "layernorm"
+    }
+)
+```
+
+Some models like `Swin` and `ConvNext` perform a downsampling of scale=4 in the first block (stem) and then downsample by 2 afterwards with only `depth=4` blocks. This results in an output size of half after the decoder. To get the same output size as the input you can pass `head_upsampling=2` which will upsample once more prior to the segmentation head.
+
+```python
+model = torchseg.Unet(
+    "convnextv2_tiny",
+    in_channels=3,
+    classes=2,
+    encoder_weights=True,
+    encoder_depth=4,
+    decoder_channels=(256, 128, 64, 32),
+    head_upsampling=2
+)
+
+model = torchseg.Unet(
+    "swin_tiny_patch4_window7_224",
+    in_channels=3,
+    classes=2,
+    encoder_weights=True,
+    encoder_depth=4,
+    decoder_channels=(256, 128, 64, 32),
+    head_upsampling=2,
+    encoder_params={"img_size": 256}  # need to define img size since swin is a ViT hybrid
+)
+
+model = torchseg.Unet(
+    "maxvit_small_tf_224",
+    in_channels=3,
+    classes=2,
+    encoder_weights=True,
+    encoder_depth=5,
+    decoder_channels=(256, 128, 64, 32, 16),
+    encoder_params={"img_size": 256}
+)
+```
+
+TorchSeg supports pretrained ViT encoders from timm by extracting intermediate transformer block features specified by the `encoder_indices` and `encoder_depth` arguments.
+
+You will also need to define `scale_factors` for upsampling the feature layers to the resolutions expected by the decoders. For U-Net `depth=5` this would be `scales=(8, 4, 2, 1, 0.5)`. For `depth=4` this would be `scales=(4, 2, 1, 0.5)`, for `depth=3` this would be `scales=(2, 1, 0.5)` and so on.
+
+Another benefit of using timm is that by passing in a new `img_size`, timm automatically interpolates the ViT positional embeddings to work with your new image size which creates a different number of patch tokens.
+
+```python
+import torch
+import torchseg
+
+
+model = torchseg.Unet(
+    "vit_small_patch16_224",
+    in_channels=8,
+    classes=2,
+    encoder_depth=5,
+    encoder_indices=(2, 4, 6, 8, 10),  # which intermediate blocks to extract features from
+    encoder_weights=True,
+    decoder_channels=(256, 128, 64, 32, 16),
+    encoder_params={  # additional params passed to timm.create_model and the vit encoder
+        "scale_factors": (8, 4, 2, 1, 0.5), # resize scale_factors for patch size 16 and 5 layers
+        "img_size": 256,  # timm automatically interpolates the positional embeddings to your new image size
+    },
+)
+
 ```
 
 ### Models
