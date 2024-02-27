@@ -13,7 +13,7 @@ class TimmEncoder(nn.Module):
         in_channels=3,
         depth=None,
         indices=None,
-        output_stride=32,
+        output_stride=None,
         **kwargs,
     ):
         super().__init__()
@@ -40,9 +40,12 @@ class TimmEncoder(nn.Module):
             features_only=True,
             pretrained=pretrained,
             out_indices=indices,
-            output_stride=output_stride,
         )
-        if "densenet" in name:
+
+        if output_stride is not None:
+            params["output_stride"] = output_stride
+
+        if "densenet" in name and "output_stride" in params:
             params.pop("output_stride")
 
         params.update(kwargs)
@@ -51,7 +54,7 @@ class TimmEncoder(nn.Module):
         self.in_channels = in_channels
         self.indices = indices
         self.depth = depth
-        self.output_stride = output_stride
+        self.output_stride = 32 if output_stride is None else output_stride
         self.out_channels = [self.in_channels] + self.model.feature_info.channels()
         self.reductions = [1] + self.model.feature_info.reduction()
         self.fix_padding()

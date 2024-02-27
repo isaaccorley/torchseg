@@ -63,7 +63,7 @@ class Unet(SegmentationModel):
         encoder_name: str = "resnet34",
         encoder_indices: Optional[tuple[int]] = None,
         encoder_depth: int = 5,
-        encoder_output_stride: int = 32,
+        encoder_output_stride: Optional[int] = None,
         encoder_weights: Optional[str] = "imagenet",
         decoder_use_batchnorm: bool = True,
         decoder_channels: list[int] = (256, 128, 64, 32, 16),
