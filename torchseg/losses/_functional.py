@@ -165,17 +165,22 @@ def soft_jaccard_score(
 def soft_dice_score(
     output: torch.Tensor,
     target: torch.Tensor,
+    power: float =  1.0,
     smooth: float = 0.0,
     eps: float = 1e-7,
-    dims=None,
+    dims = None,
 ) -> torch.Tensor:
     assert output.size() == target.size()
     if dims is not None:
-        intersection = torch.sum(output * target, dim=dims)
-        cardinality = torch.sum(output + target, dim=dims)
+        intersection = torch.sum(output * target, dim = dims)
+        output_pow = torch.sum(output ** power, dim = dims)
+        target_pow = torch.sum(target ** power, dim = dims)
+        cardinality = output_pow + target_pow
     else:
         intersection = torch.sum(output * target)
-        cardinality = torch.sum(output + target)
+        output_pow = torch.sum(output ** power)
+        target_pow = torch.sum(target ** power)
+        cardinality = output_pow + target_pow
     dice_score = (2.0 * intersection + smooth) / (cardinality + smooth).clamp_min(eps)
     return dice_score
 
