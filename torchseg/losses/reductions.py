@@ -1,14 +1,3 @@
-
-#: NONE_REDUCTION mode: the output will be summed
-MEAN_REDUCTION: str = 'mean'
-
-#: SUM_REDUCTION mode: the output will be summed
-SUM_REDUCTION: str = 'sum'
-
-#: NONE_REDUCTION mode: no reduction will be applied
-NONE_REDUCTION: str = 'none'
-
-
 class LossReduction:
     """
     Class to represent different modes of reduction.
