@@ -64,20 +64,22 @@ class DiceLoss(nn.Module):
         self.ignore_index = ignore_index
 
     def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
+
         batch_size = y_pred.shape[0]
         num_classes = y_pred.shape[1]
         spatial_dims: list[int] = torch.arange(2, len(y_pred.shape)).tolist()
+
         if self.classes is not None:
-            assert (
-                    num_classes > 1
-            ), "Masking classes is not supported for Binary Segmentation"
-            self.classes = to_tensor(self.classes, dtype = torch.long)
+            if num_classes == 1:
+                warnings.warn("Single channel prediction, masking classes is not supported for Binary Segmentation")
+            else:
+                self.classes = to_tensor(self.classes, dtype = torch.long)
 
         if self.from_logits:
             if num_classes == 1:
-                y_pred = F.log_softmax(y_pred, dim = 1).exp()
-            else:
                 y_pred = F.logsigmoid(y_pred).exp()
+            else:
+                y_pred = F.log_softmax(y_pred, dim = 1).exp()
 
         if self.mask_to_one_hot:
             if num_classes == 1:
@@ -85,8 +87,8 @@ class DiceLoss(nn.Module):
             else:
                 # maybe there is a better way to handle this?
                 permute_dims = tuple(dim - 1 for dim in spatial_dims)
-                y_true = F.one_hot(y_true, num_classes) # N, H, W, ... ---> N, H, W, ..., C
-                y_true = y_true.permute(0, -1, *permute_dims) # N, H, W, ..., C ---> N, C, H, W, ...
+                y_true = F.one_hot(y_true, num_classes).squeeze(dim = 1) # N, 1, H, W, ... ---> N, H, W, ..., C
+                y_true = y_true.permute(0, -1, *permute_dims) # N, 1, H, W, ..., C ---> N, C, H, W, ...
 
         if y_true.shape != y_pred.shape:
             raise AssertionError(f"Ground truth has different shape ({y_true.shape})"
@@ -99,8 +101,6 @@ class DiceLoss(nn.Module):
                                  smooth = self.smooth,
                                  eps = self.eps,
                                  dims = spatial_dims)
-
-        print("shape of scores: ", scores.shape) # DEBUG
 
         if self.log_loss:
             loss = -torch.log(scores.clamp_min(self.eps))
@@ -126,7 +126,7 @@ class DiceLoss(nn.Module):
         #loss *= mask.to(loss.dtype)
 
         if self.classes is not None:
-            loss = loss[self.classes]
+            loss = loss[:, self.classes, :]
 
         if self.reduction == LossReduction.MEAN:
             loss = torch.mean(loss)
