@@ -6,7 +6,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from ._functional import soft_dice_score, to_tensor
-from .constants import BINARY_MODE, MULTICLASS_MODE, MULTILABEL_MODE
 from .reductions import LossReduction
 
 
@@ -31,14 +30,16 @@ class DiceLoss(nn.Module):
         have shape (B, 1, H, W) but you should set mask_to_one_hot = True.
 
         Args:
-            - mode: Loss mode 'binary', 'multiclass' or 'multilabel'
             - classes:  List of classes that contribute in loss computation.
                 By default, all channels are included.
             - log_loss: If True, loss computed as `- log(dice_coeff)`,
                 otherwise `1 - dice_coeff`
             - from_logits: If True, assumes input is raw logits
-            - ignore_index: Label that indicates ignored pixels  not contributing to the loss
+            - mask_to_one_hot: if set to True, the mask is converted into one-hot format.
+            - power: raise the denominator to the desider power.
+            - reduction: select the reduction to be applied to the loss.
             - smooth: Smoothness constant for dice coefficient added to the numerator to avoid zero
+            - ignore_index: Label that indicates ignored pixels  not contributing to the loss
             - eps: A small epsilon added to the denominator  for numerical stability to avoid nan
                 (denominator will be always greater or equal to eps)
 
