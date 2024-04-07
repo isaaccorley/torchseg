@@ -27,6 +27,8 @@ jobs:
       run: pip list
     - name: Run ruff checks
       uses: chartboost/ruff-action@v1
+      with:
+        args: 'format --check -v'
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}
   cancel-in-progress: true
