@@ -4,13 +4,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    reviewers:
+      - "isaaccorley"
   - package-ecosystem: "pip"
     directory: "/requirements"
     schedule:
       interval: "daily"
-    ignore:
-      # setuptools releases new versions almost daily
-      - dependency-name: "setuptools"
-        update-types: ["version-update:semver-patch"]
-      - dependency-name: "timm"
-      - dependency-name: "torch"
+    reviewers:
+      - "isaaccorley"
