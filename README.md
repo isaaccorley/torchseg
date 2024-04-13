@@ -19,7 +19,7 @@ The goal of this fork is to 1) provide maintenance support for the original libr
 Additionally we have performed the following for improved software standards:
 
 - More thorough testing and CI
-- Formatting using `black`, `isort`, `flake8`, `mypy`
+- Formatting using `ruff` and `mypy`
 - Reduction of dependence on unmaintained libraries (now depends only on `torch`, `timm`, and `einops`)
 - Reduce lines of code to maintain (removed custom utils, metrics, encoders) in favor of newer libraries such as `torchmetrics` and `timm`
 
@@ -227,3 +227,23 @@ Note that some models like `ConvNext` and `Swin` only have 4 intermediate featur
 ```python
 model = torchseg.Unet('resnet50', encoder_depth=4)
 ```
+
+## Contribute
+
+We welcome new contributions for modern semantic segmentation models, losses, and methods!
+
+#### Install dev dependencies
+
+For development you can install the required dependencies using `pip install '.[all]'.
+
+#### Code Formatting
+
+To format files `ruff format --fix` and `ruff check --fix`
+
+#### Code Linting
+
+To check for linting errors run `ruff check`
+
+#### Tests
+
+To run tests use `pytest -ra`

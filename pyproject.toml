@@ -83,43 +83,21 @@ torchseg = ["py.typed"]
 include = ["torchseg*"]
 
 [tool.ruff]
-exclude = [
-    # Extra files
-    "data/",
-    "images/",
-    "logo/",
-    "logs/",
-    "output/",
-
-    # Docs
-    "docs/src/",
-
-    # Spack
-    ".spack-env/",
-
-    # Python
-    "build/",
-    "dist/",
-    ".cache/",
-    ".mypy_cache/",
-    ".pytest_cache/",
-    "__pycache__/",
-    "*.egg-info/",
-
-    # Git
-    ".git/",
-    ".github/",
-]
-
 line-length = 88
-indent-width = 4
-target-version = "py311"
+src = ["torchseg", "tests", "scripts"]
+show-fixes = true
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
+docstring-code-format = true
 
 [tool.ruff.lint]
 ignore = ["E203"]
+extend-select = ["UP", "I"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["tests", "torchseg"]
+split-on-trailing-comma=false
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

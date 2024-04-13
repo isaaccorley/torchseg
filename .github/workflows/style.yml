@@ -9,8 +9,8 @@ on:
     - main
     - release**
 jobs:
-  ruff:
-    name: ruff
+  ruff-formatting:
+    name: ruff-formatting
     runs-on: ubuntu-latest
     steps:
     - name: Clone repo
@@ -26,7 +26,25 @@ jobs:
     - name: List pip dependencies
       run: pip list
     - name: Run ruff checks
-      run: ruff format --check -v
+      run: ruff format --check
+  ruff-linting:
+    name: ruff-linting
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone repo
+      uses: actions/checkout@v4.1.1
+    - name: Set up python
+      uses: actions/setup-python@v5.0.0
+      with:
+        python-version: '3.11'
+    - name: Install pip dependencies
+      run: |
+        pip install -r requirements/style.txt
+        pip cache purge
+    - name: List pip dependencies
+      run: pip list
+    - name: Run ruff checks
+      run: ruff check
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}
   cancel-in-progress: true
