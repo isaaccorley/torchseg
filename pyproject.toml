@@ -85,6 +85,8 @@ include = ["torchseg*"]
 [tool.ruff]
 src = ["torchseg", "tests", "scripts"]
 show-fixes = true
+fix = true
+unsafe-fixes = true
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
@@ -99,3 +101,7 @@ split-on-trailing-comma=false
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"docs/**" = ["D"]
+"tests/**" = ["D"]
