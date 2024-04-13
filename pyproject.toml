@@ -83,7 +83,6 @@ torchseg = ["py.typed"]
 include = ["torchseg*"]
 
 [tool.ruff]
-line-length = 88
 src = ["torchseg", "tests", "scripts"]
 show-fixes = true
 
@@ -96,7 +95,6 @@ ignore = ["E203"]
 extend-select = ["UP", "I"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["tests", "torchseg"]
 split-on-trailing-comma=false
 
 [tool.ruff.lint.pydocstyle]

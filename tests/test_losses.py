@@ -1,6 +1,5 @@
 import pytest
 import torch
-
 import torchseg
 import torchseg.losses._functional as F
 from torchseg.losses import (
