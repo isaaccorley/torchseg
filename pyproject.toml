@@ -40,6 +40,7 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 style = [
+    # ruff 0.2+ required for [ruff.lint]
     "ruff>=0.2.0"
 ]
 tests = [
@@ -83,25 +84,18 @@ torchseg = ["py.typed"]
 include = ["torchseg*"]
 
 [tool.ruff]
-src = ["torchseg", "tests", "scripts"]
-show-fixes = true
+extend-include = ["*.ipynb"]
 fix = true
-unsafe-fixes = true
+show-fixes = true
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
-docstring-code-format = true
 
 [tool.ruff.lint]
-ignore = ["E203"]
-extend-select = ["UP", "I"]
+extend-select = ["I", "UP"]
 
 [tool.ruff.lint.isort]
 split-on-trailing-comma=false
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
-
-[tool.ruff.lint.per-file-ignores]
-"docs/**" = ["D"]
-"tests/**" = ["D"]

@@ -9,42 +9,33 @@ on:
     - main
     - release**
 jobs:
-  ruff-formatting:
-    name: ruff-formatting
+  ruff:
+    name: ruff
     runs-on: ubuntu-latest
     steps:
     - name: Clone repo
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4.1.2
     - name: Set up python
-      uses: actions/setup-python@v5.0.0
+      uses: actions/setup-python@v5.1.0
       with:
-        python-version: '3.11'
+        python-version: '3.12'
+    - name: Cache dependencies
+      uses: actions/cache@v4.0.2
+      id: cache
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements/style.txt') }}
     - name: Install pip dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         pip install -r requirements/style.txt
         pip cache purge
     - name: List pip dependencies
       run: pip list
     - name: Run ruff checks
-      run: ruff format --check
-  ruff-linting:
-    name: ruff-linting
-    runs-on: ubuntu-latest
-    steps:
-    - name: Clone repo
-      uses: actions/checkout@v4.1.1
-    - name: Set up python
-      uses: actions/setup-python@v5.0.0
-      with:
-        python-version: '3.11'
-    - name: Install pip dependencies
       run: |
-        pip install -r requirements/style.txt
-        pip cache purge
-    - name: List pip dependencies
-      run: pip list
-    - name: Run ruff checks
-      run: ruff check --exit-non-zero-on-fix
+        ruff check --no-fix
+        ruff format --diff
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}
   cancel-in-progress: true

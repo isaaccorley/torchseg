@@ -1,5 +1,6 @@
 import pytest
 import torch
+
 import torchseg
 from torchseg.encoders import mix_transformer_encoders
 
