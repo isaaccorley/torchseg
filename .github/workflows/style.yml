@@ -44,7 +44,7 @@ jobs:
     - name: List pip dependencies
       run: pip list
     - name: Run ruff checks
-      run: ruff check --output-format=github
+      run: ruff check --exit-non-zero-on-fix
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}
   cancel-in-progress: true
