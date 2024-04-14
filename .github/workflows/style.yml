@@ -34,7 +34,7 @@ jobs:
       run: pip list
     - name: Run ruff checks
       run: |
-        ruff check --no-fix
+        ruff check --output-format=github --no-fix .
         ruff format --diff
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}
