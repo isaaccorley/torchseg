@@ -40,10 +40,8 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 style = [
-    "black[jupyter]>=21.8",
-    "flake8>=3.8",
-    "isort[colors]>=5.8",
-    "pyupgrade>=2.8",
+    # ruff 0.2+ required for [ruff.lint]
+    "ruff>=0.2.0"
 ]
 tests = [
     "pytest>=7.3",
@@ -56,11 +54,6 @@ all = [
 [project.urls]
 Homepage = "https://github.com/isaaccorley/torchseg"
 
-[tool.black]
-target-version = ["py39", "py310"]
-color = true
-skip_magic_trailing_comma = true
-
 [tool.coverage.report]
 # Ignore warnings for overloads
 # https://github.com/nedbat/coveragepy/issues/970#issuecomment-612602180
@@ -68,12 +61,6 @@ exclude_lines = [
     "pragma: no cover",
     "@overload",
 ]
-
-[tool.isort]
-profile = "black"
-known_first_party = ["tests", "torchseg", "train"]
-skip_gitignore = true
-color_output = true
 
 [tool.pytest.ini_options]
 norecursedirs = [
@@ -95,3 +82,19 @@ torchseg = ["py.typed"]
 
 [tool.setuptools.packages.find]
 include = ["torchseg*"]
+
+[tool.ruff]
+fix = true
+show-fixes = true
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+
+[tool.ruff.lint]
+extend-select = ["I", "UP"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
