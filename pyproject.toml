@@ -84,7 +84,6 @@ torchseg = ["py.typed"]
 include = ["torchseg*"]
 
 [tool.ruff]
-extend-include = ["*.ipynb"]
 fix = true
 show-fixes = true
 
@@ -95,7 +94,7 @@ skip-magic-trailing-comma = true
 extend-select = ["I", "UP"]
 
 [tool.ruff.lint.isort]
-split-on-trailing-comma=false
+split-on-trailing-comma = false
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

@@ -236,13 +236,9 @@ We welcome new contributions for modern semantic segmentation models, losses, an
 
 For development you can install the required dependencies using `pip install '.[all]'.
 
-#### Code Formatting
+#### Code Formatting/Linting
 
-To format files `ruff format --fix` and `ruff check --fix`
-
-#### Code Linting
-
-To check for linting errors run `ruff check`
+To format files run `ruff format`. To check for linting errors run `ruff check`.
 
 #### Tests
 
