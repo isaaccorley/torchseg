@@ -2,6 +2,12 @@
 
 TorchSeg is an actively maintained and up-to-date fork of the [Segmentation Models PyTorch (smp) library](https://github.com/qubvel/segmentation_models.pytorch).
 
+#### Install
+
+```bash
+pip install torchseg
+```
+
 #### Updates
 
 The goal of this fork is to 1) provide maintenance support for the original library and 2) add features relevant to modern semantic segmentation. Since the fork, this library has added some features which can be summarized below:
@@ -13,7 +19,7 @@ The goal of this fork is to 1) provide maintenance support for the original libr
 Additionally we have performed the following for improved software standards:
 
 - More thorough testing and CI
-- Formatting using `black`, `isort`, `flake8`, `mypy`
+- Formatting using `ruff` and `mypy`
 - Reduction of dependence on unmaintained libraries (now depends only on `torch`, `timm`, and `einops`)
 - Reduce lines of code to maintain (removed custom utils, metrics, encoders) in favor of newer libraries such as `torchmetrics` and `timm`
 
@@ -37,7 +43,7 @@ import torchseg
 model = torchseg.Unet(
     encoder_name="resnet50",
     encoder_weights=True,
-    in_channels=3
+    in_channels=3,
     classes=3,
 )
 ```
@@ -50,7 +56,7 @@ You can also define a `functools.partial` callable as an activation/normalizatio
 model = torchseg.Unet(
     encoder_name="resnet50",
     encoder_weights=True,
-    in_channels=3
+    in_channels=3,
     classes=3,
     encoder_params={
       "act_layer": "prelu",
@@ -221,3 +227,19 @@ Note that some models like `ConvNext` and `Swin` only have 4 intermediate featur
 ```python
 model = torchseg.Unet('resnet50', encoder_depth=4)
 ```
+
+## Contribute
+
+We welcome new contributions for modern semantic segmentation models, losses, and methods!
+
+#### Install dev dependencies
+
+For development you can install the required dependencies using `pip install '.[all]'.
+
+#### Code Formatting/Linting
+
+To format files run `ruff format`. To check for linting errors run `ruff check`.
+
+#### Tests
+
+To run tests use `pytest -ra`
