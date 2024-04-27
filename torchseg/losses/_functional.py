@@ -170,7 +170,28 @@ def soft_dice_score(
     eps: float = 1e-7,
     dims = None,
 ) -> torch.Tensor:
+    """
+    Function that computes the Soft Dice Score between output and target.
+    The Soft Dice Score is computed using class probabilities instead of
+    thresholded binary values, so that it is differentiable.
+
+    Args:
+        - output: `torch.Tensor` of shape (B, C, H, W, ...), containing class probabilities,
+            where C is the number of classes.
+        - target: `torch.Tensor` (B, C, H, W, ...), ground truth mask, where C is the number of classes.
+        - power: raise the denominator to the desired power.
+        - smooth: smoothness constant for dice coefficient added to the numerator to avoid zero.
+        - eps: a small epsilon added to the denominator  for numerical stability to avoid nan
+            (denominator will be always greater or equal to eps).
+        - dims: dimensions to reduce, over which the loss is computed.
+    """
+
     assert output.size() == target.size()
+
+    """
+    PERSONAL OPINION: should we get rid of dims and the corresponding computation?
+    it doesnt make much sense to me
+    """
     if dims is not None:
         intersection = torch.sum(output * target, dim = dims)
         output_pow = torch.sum(output ** power, dim = dims)
