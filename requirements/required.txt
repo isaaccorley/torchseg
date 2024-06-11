@@ -3,5 +3,5 @@ setuptools==69.2.0
 
 # install
 einops==0.7.0
-timm==0.9.16
+timm==1.0.3
 torch==2.2.2
