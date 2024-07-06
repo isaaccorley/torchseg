@@ -151,32 +151,58 @@ def soft_jaccard_score(
 ) -> torch.Tensor:
     assert output.size() == target.size()
     if dims is not None:
-        intersection = torch.sum(output * target, dim=dims)
-        cardinality = torch.sum(output + target, dim=dims)
+        intersection = torch.sum(output * target, dim = dims)
+        cardinality = torch.sum(output + target, dim = dims)
     else:
         intersection = torch.sum(output * target)
         cardinality = torch.sum(output + target)
 
     union = cardinality - intersection
-    jaccard_score = (intersection + smooth) / (union + smooth).clamp_min(eps)
+    jaccard_score = (intersection + smooth) / (union + eps)
     return jaccard_score
 
 
 def soft_dice_score(
     output: torch.Tensor,
     target: torch.Tensor,
+    power: float =  1.0,
     smooth: float = 0.0,
     eps: float = 1e-7,
-    dims=None,
+    dims = None,
 ) -> torch.Tensor:
+    """
+    Function that computes the Soft Dice Score between output and target.
+    The Soft Dice Score is computed using class probabilities instead of
+    thresholded binary values, so that it is differentiable.
+
+    Args:
+        - output: `torch.Tensor` of shape (B, C, H, W, ...), containing class probabilities,
+            where C is the number of classes.
+        - target: `torch.Tensor` (B, C, H, W, ...), ground truth mask, where C is the number of classes.
+        - power: raise the denominator to the desired power.
+        - smooth: smoothness constant for dice coefficient added to the numerator to avoid zero.
+        - eps: a small epsilon added to the denominator  for numerical stability to avoid nan
+            (denominator will be always greater or equal to eps).
+        - dims: dimensions to reduce, over which the loss is computed.
+    """
+
     assert output.size() == target.size()
+
+    """
+    PERSONAL OPINION: should we get rid of dims and the corresponding computation?
+    it doesnt make much sense to me
+    """
     if dims is not None:
-        intersection = torch.sum(output * target, dim=dims)
-        cardinality = torch.sum(output + target, dim=dims)
+        intersection = torch.sum(output * target, dim = dims)
+        output_pow = torch.sum(output ** power, dim = dims)
+        target_pow = torch.sum(target ** power, dim = dims)
+        cardinality = output_pow + target_pow
     else:
         intersection = torch.sum(output * target)
-        cardinality = torch.sum(output + target)
-    dice_score = (2.0 * intersection + smooth) / (cardinality + smooth).clamp_min(eps)
+        output_pow = torch.sum(output ** power)
+        target_pow = torch.sum(target ** power)
+        cardinality = output_pow + target_pow
+    dice_score = (2.0 * intersection + smooth) / (cardinality + eps)
     return dice_score
 
 
