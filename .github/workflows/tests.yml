@@ -45,7 +45,7 @@ jobs:
       run: |
         pytest --cov=torchseg --cov-report=xml --durations=10
     - name: Report coverage
-      uses: codecov/codecov-action@v3.1.6
+      uses: codecov/codecov-action@v4.4.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
 concurrency:
